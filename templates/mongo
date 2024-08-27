@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+docker pull mongo:"{{ mongodb_version }}"
+
+docker rm -f -v mongo || :
+
+docker run -u  root --net=host --rm --name=mongo \
+         -p "{{ mongodb_bind_port }}:{{ mongodb_bind_port }}" \
+         --privileged  --cap-add=ALL \
+         --ulimit nproc=65535 --ulimit memlock=-1:-1 --ulimit  nofile=165536:165536  \
+         --log-driver json-file --log-opt max-size=500k --log-opt max-file=50 \
+        -v {{ mongodb_data_dir }}:/data/db \
+        -v {{ mongodb_log_dir }}:/var/log/mongodb \
+        -v {{ mongodb_config_dir }}/mongod.conf:/etc/mongod.conf \
+        -v {{ mongodb_config_dir }}/keyfile.txt:/mongo/keyfile.txt:ro \
+        -v {{ mongodb_config_dir }}:/mongo/config \
+         mongo:{{ mongodb_version }} -f /etc/mongod.conf

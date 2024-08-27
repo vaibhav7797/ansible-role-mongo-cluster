@@ -1,0 +1,46 @@
+---
+mongodb_version: "5.0.6"
+mongodb_cluster_name: mongo
+mongodb_bind_ip: 0.0.0.0
+mongodb_bind_port: 27017
+
+mongodb_user: mongodb
+mongodb_group: mongodb
+
+mount_path: "/data"
+mongodb_opt_dir: "/opt/{{ mongodb_cluster_name }}"
+mongodb_config_dir: "{{ mongodb_opt_dir }}/config"
+mongodb_log_dir: "/var/log/{{ mongodb_cluster_name }}"
+mongodb_data_dir: "{{ mount_path }}/{{ mongodb_cluster_name }}"
+
+# mongodb cluster settings
+mongodb_group_hosts: "{{ hostvars['localhost'].groups['mongodb'] }}"
+# Mongo user setting
+# @link https://www.random.org/strings/?num=10&len=12&digits=on&upperalpha=on&loweralpha=on&unique=on&format=html&rnd=new
+mongodb_password:
+  - E73HjPHWruTTWjZVvn
+  - F58z7wubDxxepygw49
+  - K538ymeknzeGuXyJRE
+  - 6mVG4XerTpD53SKLHA
+  - Vyt5WMKhBT94ZBkDLq
+  - AwDEt7vPrnxyECnFss
+  - 8XGaDxA3eHn4G5ny2j
+  - M2fmbhe4TpZ9FXBA9P
+  - jgjPJ7VBZsvx35EXdj
+  - J2KjLDfzCsAR2XMas6
+
+mongodb_superuser: super
+mongodb_superuser_password: "{{ mongodb_password[0] }}"
+
+# https://docs.mongodb.com/manual/reference/built-in-roles/
+# https://docs.mongodb.com/manual/reference/method/db.createUser/
+# default('read,readWrite,dbAdmin,userAdmin,clusterAdmin,readAnyDatabase,readWriteAnyDatabase,userAdminAnyDatabase,dbAdminAnyDatabase')
+# yamllint disable
+mongodb_users:
+  - { username: test_user,      password: "{{ mongodb_password[1] }}", authdb: admin }
+  - { username: root,           password: "{{ mongodb_password[2] }}", authdb: admin, roles: [ "root" ] }
+  - { username: db_read,        password: "{{ mongodb_password[3] }}", authdb: admin, roles: [ {role: readAnyDatabase, db: admin } ] }
+  - { username: db_read_write,  password: "{{ mongodb_password[3] }}", authdb: admin, roles: [ {role: readWriteAnyDatabase, db: admin } ] }
+  - { username: app_user,       password: "{{ mongodb_password[5] }}", authdb: admin, roles: [ {role: readWriteAnyDatabase, db: admin}, {role: userAdminAnyDatabase, db: admin } ] }
+mongodb_auth_cmd: "/usr/bin/mongo --authenticationDatabase admin -u{{mongodb_superuser}} -p{{mongodb_superuser_password}} --port {{ mongodb_bind_port|default('27017') }} "
+# yamllint enable

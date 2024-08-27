@@ -1,0 +1,1 @@
+{{ mongodb_keyfile_content | default('yCbLy6gu5b7jgjPJ7VBZsvx35EXdjcxCzjN5ztXVjBk22Fwt5s') }}

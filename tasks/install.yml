@@ -1,0 +1,31 @@
+---
+- name: copy mongo script
+  template:
+    src: "mongo"
+    dest: /usr/local/bin/mongo
+    mode: 0755
+    owner: root
+    group: root
+
+- name: copy mongo script
+  template:
+    src: "mongo.service"
+    dest: /etc/systemd/system/mongo.service
+    mode: 0644
+    owner: root
+    group: root
+
+- name: restart mongo
+  service:
+    name: mongo
+    state: restarted
+    enabled: true
+
+- name: wait for mongo to become ready
+  wait_for:
+    host: "{{mongodb_bind_ip}}"
+    port: "{{ mongodb_bind_port }}"
+    state: started
+    delay: 5
+    connect_timeout: 15
+    timeout: 300

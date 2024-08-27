@@ -1,0 +1,36 @@
+---
+# todo fix incase we add sometimes it add replica twice and changes order and cause conflicts in replication status
+- name: Initialize the replication set
+  shell: "docker exec {{ mongodb_cluster_name }} /usr/bin/mongo --port {{ mongodb_bind_port | default('27017') }} /mongo/config/repset_init.js"
+  ignore_errors: true
+  when: EcType == "mongodb-master"
+
+- name: initialize the super mongodb superuser
+  shell: "docker exec {{ mongodb_cluster_name }} /usr/bin/mongo --port {{ mongodb_bind_port | default('27017') }} /mongo/config/superuser_init.js"
+  ignore_errors: true
+
+- name: update the super mongodb superuser
+  shell: "docker exec {{ mongodb_cluster_name }} {{ mongodb_auth_cmd }} /mongo/config/superuser_update.js"
+  ignore_errors: true
+
+- name: add mongodb users
+  shell: "docker exec {{ mongodb_cluster_name }} {{ mongodb_auth_cmd }} /mongo/config/users_init.js"
+  when: mongodb_users|length > 0
+  ignore_errors: true
+
+- name: add hosts to the replication set
+  shell: "docker exec {{ mongodb_cluster_name }} {{ mongodb_auth_cmd }} /mongo/config/repset_add.js"
+  ignore_errors: true
+
+- name: update the super mongodb superuser
+  shell: "docker exec {{ mongodb_cluster_name }} {{ mongodb_auth_cmd }} /mongo/config/superuser_update.js"
+  ignore_errors: true
+
+- name: add mongodb users
+  shell: "docker exec {{ mongodb_cluster_name }} {{ mongodb_auth_cmd }} /mongo/config/users_init.js"
+  when: mongodb_users|length > 0
+  ignore_errors: true
+
+- name: add hosts to the replication set
+  shell: "docker exec {{ mongodb_cluster_name }} {{ mongodb_auth_cmd }} /mongo/config/repset_add.js"
+  ignore_errors: true

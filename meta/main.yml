@@ -1,0 +1,31 @@
+---
+dependencies: []
+
+galaxy_info:
+  author: Anmol Nagpal
+  description: This ansible role is used to install Mongo Cluster with docker on linux.
+  company: "CloudDrove Inc."
+  license: "license (BSD, MIT)"
+  min_ansible_version: 2.4
+  platforms:
+    - name: Debian
+      versions:
+        - jessie
+        - stretch
+    - name: Ubuntu
+      versions:
+        - trusty
+        - xenial
+        - bionic
+    - name: EL
+      versions:
+        - 7
+  galaxy_tags:
+    - system
+    - server
+    - mongodb
+    - ubuntu
+    - debian
+    - centos
+    - cluster
+    - docker

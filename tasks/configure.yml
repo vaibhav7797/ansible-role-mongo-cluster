@@ -1,0 +1,32 @@
+---
+
+- name: create mongodb dirs
+  file:
+    path: "{{ item|safe|trim }}"
+    state: directory
+    owner: "{{ mongodb_user }}"
+    group: "{{ mongodb_group }}"
+    recurse: true
+  changed_when: false
+  with_items:
+    - "{{ mongodb_opt_dir }}"
+    - "{{ mongodb_log_dir }}"
+    - "{{ mongodb_config_dir }}"
+
+- name: create mongodb configuration file
+  template:
+    src: "{{ item }}"
+    dest: "{{ mongodb_config_dir }}/{{ item | basename }}"
+    owner: "{{ mongodb_user }}"
+    group: "{{ mongodb_group }}"
+    mode: 0777
+  with_fileglob:
+    - ../templates/config/*
+
+- name: create mongodb key file
+  template:
+    dest: "{{ mongodb_config_dir }}/keyfile.txt"
+    owner: "{{ mongodb_user }}"
+    group: "{{ mongodb_group }}"
+    mode: 0600
+    src: config/keyfile.txt

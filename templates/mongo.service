@@ -1,0 +1,9 @@
+[Unit]
+Description=mongo Server
+
+[Service]
+TimeoutStartSec=0
+Restart=always
+ExecStart=/usr/local/bin/mongo
+[Install]
+WantedBy=multi-user.target

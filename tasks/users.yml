@@ -1,0 +1,12 @@
+---
+
+- name: setup group
+  group:
+    name: "{{ mongodb_group }}"
+    system: true
+
+- name: setup user
+  user:
+    name: "{{ mongodb_user }}"
+    system: true
+    group: "{{ mongodb_group }}"
